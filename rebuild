@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ "$(docker-compose ps -q | wc -l)" -gt 0 ]; then
+  docker-compose down
+fi
+
+
+docker build --no-cache -t chainlitb backend
+
+docker-compose up -d
+
+docker compose logs -f backend 

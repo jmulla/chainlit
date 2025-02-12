@@ -38,9 +38,13 @@ export default function ThreadPage() {
         {config?.threadResumable && !isCurrentThread ? (
           <AutoResumeThread id={id!} />
         ) : null}
+
+
         {config?.threadResumable ? (
           isCurrentThread ? (
-            <Chat />
+            
+              <Chat />
+            
           ) : (
             <div className="flex flex-grow items-center justify-center">
               <Loader className="!size-6" />

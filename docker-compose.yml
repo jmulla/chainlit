@@ -1,5 +1,4 @@
 # /docker-compose.yml
-version: '3.9'
 services:
 
   chainlitdb:
@@ -15,36 +14,30 @@ services:
 
 
   backend:
-    env_file: ~/.drumroll/.env
     build: ./backend
-    image: b2
+    image: chainlitb
     ports:
-      - 56780:5678    
+      - 8000:8000    
     environment:
       - DATABASE_URL=postgresql://root:root@chainlitdb:5432/postgres
       - CHAINLIT_AUTH_SECRET="HZohuMm7$$RUfY?q5T^5b6Lb7rlEskk9irCA>aWPX_9:a@i_RaOL.c_2_H_bo-w?v"
-    volumes:
-      - ~/.drumroll/config.yml:/root/.drumroll/config.yml
-      - ./backend:/app
 
-    # command: "uvicorn main:app --host 0.0.0.0 --port 80 --reload"
-    # command: "python -m debugpy --listen 0.0.0.0:5678 -m uvicorn main:app --host 0.0.0.0 --port 80 --timeout-keep-alive 30"
-    command: "./backend_uat.sh"
+    command: "./backend.sh"
     labels:
       - traefik.http.routers.backend.rule=PathPrefix(`/api`) || PathPrefix(`/docs`) || PathPrefix(`/redoc`) || PathPrefix(`/open`)
       - traefik.http.services.backend.loadbalancer.server.port=80
 
 
-  frontend:
-    build: ./frontend
-    working_dir: /var/www/html/app/
-    ports:
-      - '5173:5173'
-    volumes:
-      - ~/.ssh:/root/.ssh:ro
-      - ./frontend:/var/www/html/app/
-    # command: "yarn dev --host --port 5544"
-    # command: "yarn add react-virtualized"
-    entrypoint: /bin/bash
-    tty: true
+  # frontend:
+  #   build: ./frontend
+  #   working_dir: /var/www/html/app/
+  #   ports:
+  #     - '5173:5173'
+  #   volumes:
+  #     - ~/.ssh:/root/.ssh:ro
+  #     - ./frontend:/var/www/html/app/
+  #   # command: "yarn dev --host --port 5544"
+  #   # command: "yarn add react-virtualized"
+  #   entrypoint: /bin/bash
+  #   tty: true
 
