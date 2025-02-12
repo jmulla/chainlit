@@ -12,6 +12,7 @@ import { useLayoutMaxWidth } from 'hooks/useLayoutMaxWidth';
 
 import { Messages } from '..';
 import { AskActionButtons } from './AskActionButtons';
+import { AskActionSelect } from './AskActionSelect';
 import { AskFileButton } from './AskFileButton';
 import { MessageAvatar } from './Avatar';
 import { MessageButtons } from './Buttons';
@@ -132,7 +133,7 @@ const Message = memo(
                       {!isRunning && isAsk ? (
                         <>
                           <AskFileButton onError={onError} />
-                          <AskActionButtons
+                          <AskActionSelect
                             actions={actions}
                             messageId={message.id}
                           />

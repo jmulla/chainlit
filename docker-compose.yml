@@ -21,7 +21,9 @@ services:
     environment:
       - DATABASE_URL=postgresql://root:root@chainlitdb:5432/postgres
       - CHAINLIT_AUTH_SECRET="HZohuMm7$$RUfY?q5T^5b6Lb7rlEskk9irCA>aWPX_9:a@i_RaOL.c_2_H_bo-w?v"
-
+    volumes:
+      - ./backend/.chainlit:/app/.chainlit 
+      - ./backend/app:/app/app
     command: "./backend.sh"
     labels:
       - traefik.http.routers.backend.rule=PathPrefix(`/api`) || PathPrefix(`/docs`) || PathPrefix(`/redoc`) || PathPrefix(`/open`)

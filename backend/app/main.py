@@ -8,4 +8,4 @@ app = FastAPI()
 def read_main():
     return {"message": "Hello World from main app"}
 
-mount_chainlit(app=app, target="chainlit/app.py", path="/chat")
+mount_chainlit(app=app, target="app/app.py", path="/chat")
