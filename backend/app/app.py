@@ -1,6 +1,8 @@
 import chainlit as cl
 from chainlit.input_widget import Select, Switch, Slider
 import pandas as pd
+import plotly.graph_objects as go
+
 
 @cl.password_auth_callback
 def auth_callback(username: str, password: str):
@@ -31,25 +33,25 @@ async def on_action(action):
     # Optionally remove the action button from the chatbot user interface
     await action.remove()
 
-# @cl.set_chat_profiles
-# async def chat_profile():
-#     return [
-#         cl.ChatProfile(
-#             name="GPT-3.5",
-#             markdown_description="The underlying LLM model is **GPT-3.5**.",
-#             icon="https://picsum.photos/200",
-#         ),
-#         cl.ChatProfile(
-#             name="GPT-4",
-#             markdown_description="The underlying LLM model is **GPT-4**.",
-#             icon="https://picsum.photos/250",
-#         ),
-#     ]
+@cl.set_chat_profiles
+async def chat_profile():
+    return [
+        cl.ChatProfile(
+            name="GPT-3.5",
+            markdown_description="The underlying LLM model is **GPT-3.5**.",
+            icon="https://picsum.photos/200",
+        ),
+        cl.ChatProfile(
+            name="GPT-4",
+            markdown_description="The underlying LLM model is **GPT-4**.",
+            icon="https://picsum.photos/250",
+        ),
+    ]
 
 
 @cl.on_chat_start
 async def start():
-    settings = await cl.ChatSettings(
+    await cl.ChatSettings(
         [
             Select(
                 id="Model",
@@ -119,30 +121,22 @@ async def main(message: cl.Message):
     """
 
 
-    res = await cl.AskActionMessage(
-        content="Pick an action!",
-        actions=[
-            cl.Action(name="continue", payload={"value": "continue"}, label="✅ Continue"),
-            cl.Action(name="cancel", payload={"value": "cancel"}, label="❌ Cancel"),
-        ],
-    ).send()
+    # res = await cl.AskActionMessage(
+    #     content="Pick an action!",
+    #     actions=[
+    #         cl.Action(name="continue", payload={"value": "continue"}, label="✅ Continue"),
+    #         cl.Action(name="cancel", payload={"value": "cancel"}, label="❌ Cancel"),
+    #     ],
+    # ).send()
 
-    if res and res.get("payload").get("value") == "continue":
-        await cl.Message(
-            content="Continue!",
-        ).send()
-
-
-    # a = cl.Action(name="action_button1", payload={"value": "example_value"}, label="Click me!")
-    # actions = [
-    #     a
-    # ]
-
-    # await cl.Message(content="Interact with this action button:", actions=actions).send()
+    # if res and res.get("payload").get("value") == "continue":
+    #     await cl.Message(
+    #         content="Continue!",
+    #     ).send()
 
 
 
-    await cl.Message(content="Great").send()
+
     # r = cl.Message(content="Nice")
     
     # async with cl.Step(name="Processing data very intensively ...") as step:
@@ -162,4 +156,55 @@ async def main(message: cl.Message):
     #     await step.remove()
 
     # await cl.Message(content="Nice").send(); await cl.sleep(1)
-   
+
+    
+    # df = pd.DataFrame([[1,1], [2,3]], columns=["A", "B"])
+    # print(df)
+
+    # elements = [cl.Dataframe(data=df, display="side", name="Dataframe")]
+
+    # await cl.Message(content="This Dataframe message has a ", elements=elements).send()
+
+
+    # image = 'https://picsum.photos/200/300'
+    # image = cl.Image(url=image, name="image1", display="inline")
+
+    # # Attach the image to the message
+    # await cl.Message(
+    #     content="This message has an image!",
+    #     elements=[image],
+    # ).send()
+
+
+    # fig = go.Figure(
+    #     data=[go.Bar(y=[2, 1, 3])],
+    #     layout_title_text="An example figure",
+    # )
+    # elements = [cl.Plotly(name="chart", figure=fig, display="inline")]
+
+    # await cl.Message(content="This message has a chart", elements=elements).send()
+    task_list = cl.TaskList()
+    task_list.status = "Running..."
+
+    # Create a task and put it in the running state
+    task1 = cl.Task(title="Processing data", status=cl.TaskStatus.RUNNING)
+    await task_list.add_task(task1)
+    # Create another task that is in the ready state
+    task2 = cl.Task(title="Performing calculations")
+    await task_list.add_task(task2)
+
+    # Optional: link a message to each task to allow task navigation in the chat history
+    message = await cl.Message(content="Started processing data").send()
+    task1.forId = message.id
+
+    # Update the task list in the interface
+    await task_list.send()
+
+    # Perform some action on your end
+    await cl.sleep(1)
+
+    # Update the task statuses
+    task1.status = cl.TaskStatus.DONE
+    task2.status = cl.TaskStatus.FAILED
+    task_list.status = "Failed"
+    await task_list.send()

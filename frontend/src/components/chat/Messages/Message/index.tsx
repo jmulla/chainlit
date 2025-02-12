@@ -53,6 +53,8 @@ const Message = memo(
 
     const skip = toolCallSkip || hiddenSkip;
 
+    console.log('message', message);
+
     if (skip) {
       if (!message.steps) {
         return null;

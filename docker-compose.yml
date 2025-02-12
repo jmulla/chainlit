@@ -29,7 +29,14 @@ services:
       - traefik.http.routers.backend.rule=PathPrefix(`/api`) || PathPrefix(`/docs`) || PathPrefix(`/redoc`) || PathPrefix(`/open`)
       - traefik.http.services.backend.loadbalancer.server.port=80
 
-
+  studio:
+    build: ./backend
+    image: chainlitb
+    ports:
+      - 5555:5555    
+    environment:
+      - DATABASE_URL=postgresql://root:root@chainlitdb:5432/postgres
+    command: "npx prisma studio"
   # frontend:
   #   build: ./frontend
   #   working_dir: /var/www/html/app/
