@@ -554,6 +554,21 @@ async def header_auth(request: Request):
 
     return await _authenticate_user(request, user)
 
+@router.get("/auth/header")
+async def header_auth_get(request: Request):
+    print('header_auth', request.headers)
+    """Login a user using the header_auth_callback."""
+    if not config.code.header_auth_callback:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No header_auth_callback defined",
+        )
+
+    user = await config.code.header_auth_callback(request.headers)
+
+    return await _authenticate_user(request, user)
+
+
 
 @router.get("/auth/oauth/{provider_id}")
 async def oauth_login(provider_id: str, request: Request):
