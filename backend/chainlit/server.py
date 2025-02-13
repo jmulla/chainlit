@@ -542,6 +542,7 @@ async def jwt_auth(request: Request):
 
 @router.post("/auth/header")
 async def header_auth(request: Request):
+    print('header_auth', request.headers)
     """Login a user using the header_auth_callback."""
     if not config.code.header_auth_callback:
         raise HTTPException(
