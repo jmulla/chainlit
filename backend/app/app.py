@@ -1,7 +1,6 @@
+
 import chainlit as cl
-from chainlit.input_widget import Select, Switch, Slider
-import pandas as pd
-import plotly.graph_objects as go
+from chainlit.input_widget import Select, Slider, Switch
 
 
 @cl.password_auth_callback
