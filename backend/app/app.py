@@ -33,9 +33,8 @@ async def on_action(action):
     await action.remove()
 
 @cl.set_chat_profiles
-async def chat_profile(*args, **kwargs ):
-    print('chat_profile args:', args)
-    print('chat_profile kwargs:', kwargs)
+async def chat_profile(usr):
+    print('Invoke chat profiles', usr.metadata,usr.metadata.get('email'))
     return [
         cl.ChatProfile(
             name="WS100",
@@ -71,7 +70,9 @@ async def chat_profile(*args, **kwargs ):
 
 
 @cl.on_chat_start
-async def start():
+async def start(*args, **kwargs):
+    usr = cl.user_session.get('user')
+    print('Invoke chat start', usr.metadata)
     await cl.ChatSettings(
         [
             Select(
