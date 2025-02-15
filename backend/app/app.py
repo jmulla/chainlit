@@ -33,18 +33,40 @@ async def on_action(action):
     await action.remove()
 
 @cl.set_chat_profiles
-async def chat_profile():
+async def chat_profile(*args, **kwargs ):
+    print('chat_profile args:', args)
+    print('chat_profile kwargs:', kwargs)
     return [
         cl.ChatProfile(
-            name="GPT-3.5",
-            markdown_description="The underlying LLM model is **GPT-3.5**.",
+            name="WS100",
+            markdown_description="""Explore **Lilly file.csv**.
+            """,
             icon="https://picsum.photos/200",
+            starters=[
+                cl.Starter(
+                    label="Describe it.",
+                    message="Can you help me create a personalized morning routine that would help increase my productivity throughout the day? Start by asking me about my current habits and what activities energize me in the morning.",
+                    icon="https://picsum.photos/200",
+                    ),
+
+                cl.Starter(
+                    label="Auto-discover",
+                    message="Can you help me create a personalized morning routine that would help increase my productivity throughout the day? Start by asking me about my current habits and what activities energize me in the morning.",
+                    icon="https://picsum.photos/200",
+                    ),
+
+                cl.Starter(
+                    label="Help",
+                    message="Explain superconductors like I'm five years old.",
+                    icon="https://picsum.photos/200",
+                    ),
+            ]
         ),
-        cl.ChatProfile(
-            name="GPT-4",
-            markdown_description="The underlying LLM model is **GPT-4**.",
-            icon="https://picsum.photos/250",
-        ),
+        # cl.ChatProfile(
+        #     name="GPT-4",
+        #     markdown_description="The underlying LLM model is **GPT-4**.",
+        #     icon="https://picsum.photos/250",
+        # ),
     ]
 
 
@@ -54,55 +76,18 @@ async def start():
         [
             Select(
                 id="Model",
-                label="OpenAI - Model",
-                values=["gpt-3.5-turbo", "gpt-3.5-turbo-16k", "gpt-4", "gpt-4-32k"],
+                label="Choose between QA or SQL API",
+                values=["QA", "SQL"],
                 initial_index=0,
             ),
-            Switch(id="Streaming", label="OpenAI - Stream Tokens", initial=True),
-            Slider(
-                id="Temperature",
-                label="OpenAI - Temperature",
-                initial=1,
-                min=0,
-                max=2,
-                step=0.1,
+
+            Select(
+                id="Style",
+                label="Conversation Style",
+                values="Normal,Concise,Explanatory,Formal".split(','),
+                initial_index=0,
             ),
-            Slider(
-                id="SAI_Steps",
-                label="Stability AI - Steps",
-                initial=30,
-                min=10,
-                max=150,
-                step=1,
-                description="Amount of inference steps performed on image generation.",
-            ),
-            Slider(
-                id="SAI_Cfg_Scale",
-                label="Stability AI - Cfg_Scale",
-                initial=7,
-                min=1,
-                max=35,
-                step=0.1,
-                description="Influences how strongly your generation is guided to match your prompt.",
-            ),
-            Slider(
-                id="SAI_Width",
-                label="Stability AI - Image Width",
-                initial=512,
-                min=256,
-                max=2048,
-                step=64,
-                tooltip="Measured in pixels",
-            ),
-            Slider(
-                id="SAI_Height",
-                label="Stability AI - Image Height",
-                initial=512,
-                min=256,
-                max=2048,
-                step=64,
-                tooltip="Measured in pixels",
-            ),
+
         ]
     ).send()
 
